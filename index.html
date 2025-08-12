@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartProf - العلوم الطبيعية</title>
+    
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="icon-192.png" type="image/png">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SmartProf">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Preload Important Resources -->
+    <link rel="preload" href="script.js" as="script">
+    <link rel="preload" href="style.css" as="style">
+</head>
+<body>
+    <!-- Connection Status Alert -->
+    <div id="connection-status" class="alert alert-warning fixed-top text-center mb-0 rounded-0 d-none">
+        <i class="fas fa-wifi-slash me-2"></i>
+        أنت تعمل حالياً بدون اتصال بالإنترنت. سيتم مزامنة البيانات عند الاتصال.
+    </div>
+
+    <div class="container-fluid bg-light p-4">
+        <!-- Header Section -->
+        <header class="text-center mb-4">
+            <h1 class="text-info fw-bold mb-3">
+                <i class="fa-solid fa-list-check me-2"></i>
+                SmartProf
+            </h1>
+            <p class="text-muted lead">
+                نظام متكامل لإدارة الانشطة التعليمية لأستاذ العلوم الطبيعية
+            </p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="bg-white p-4 rounded shadow-sm">
+            <div class="row">
+                <!-- Schedule Form Column -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card p-3 h-100">
+                        <div class="card-header bg-transparent border-0 pb-0">
+                            <h2 class="card-title text-info mb-3">
+                                <i class="fa-solid fa-calendar-days me-2"></i>
+                                إدخال الجدول الأسبوعي
+                            </h2>
+                        </div>
+                        <form id="schedule-form">
+                            <div class="mb-3">
+                                <label for="schedule-day" class="form-label">يوم الحصة</label>
+                                <select class="form-select" id="schedule-day" required>
+                                    <option value="">اختر يوم</option>
+                                    <option value="الأحد">الأحد</option>
+                                    <option value="الاثنين">الاثنين</option>
+                                    <option value="الثلاثاء">الثلاثاء</option>
+                                    <option value="الأربعاء">الأربعاء</option>
+                                    <option value="الخميس">الخميس</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="schedule-start-time" class="form-label">بداية الحصة</label>
+                                    <input type="time" class="form-control" id="schedule-start-time" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="schedule-end-time" class="form-label">نهاية الحصة</label>
+                                    <input type="time" class="form-control" id="schedule-end-time" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="schedule-level-select" class="form-label">المستوى</label>
+                                <select class="form-select" id="schedule-level-select" required>
+                                    <option value="">اختر مستوى</option>
+                                    <option value="الأولى">الأولى متوسط</option>
+                                    <option value="الثانية">الثانية متوسط</option>
+                                    <option value="الثالثة">الثالثة متوسط</option>
+                                    <option value="الرابعة">الرابعة متوسط</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="schedule-class-number" class="form-label">رقم القسم</label>
+                                <input type="number" class="form-control" id="schedule-class-number" min="1" max="10" required>
+                            </div>
+                            <button type="submit" class="btn btn-info w-100 py-2">
+                                <i class="fa-solid fa-plus me-2"></i>
+                                إضافة حصة
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Task Form Column -->
+                <div class="col-lg-6">
+                    <div class="card p-3 h-100">
+                        <div class="card-header bg-transparent border-0 pb-0">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="card-title text-info mb-0">
+                                    <i class="fa-solid fa-tasks me-2"></i>
+                                    إضافة مهمة جديدة
+                                </h2>
+                                <button id="enable-notifications-btn" class="btn btn-sm btn-outline-secondary" 
+                                        title="تفعيل التنبيهات" data-bs-toggle="tooltip">
+                                    <i class="fa-solid fa-bell me-1"></i>
+                                    تفعيل التنبيهات
+                                </button>
+                            </div>
+                        </div>
+                        <form id="task-form">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="task-date" class="form-label">تاريخ المهمة</label>
+                                    <input type="date" class="form-control" id="task-date" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="task-notification-duration" class="form-label">التنبيه قبل الحصة (دقيقة)</label>
+                                    <input type="number" class="form-control" id="task-notification-duration" min="0" value="120" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task-alert-type" class="form-label">نوع التنبيه</label>
+                                <select class="form-select" id="task-alert-type" required>
+                                    <option value="">اختر نوع التنبيه</option>
+                                    <option value="تذكير بتحضير الدرس">تذكير بتحضير الدرس</option>
+                                    <option value="تذكير بتهيئة الدرس">تذكير بتهيئة الدرس</option>
+                                    <option value="تذكير بإعداد الوسائل">تذكير بإعداد الوسائل</option>
+                                    <option value="تذكير بتصحيح الواجبات">تذكير بتصحيح الواجبات</option>
+                                    <option value="مهمة عامة">مهمة عامة</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task-class-select" class="form-label">القسم</label>
+                                <select class="form-select" id="task-class-select" required>
+                                    <option value="">اختر قسم (بعد اختيار التاريخ)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task-field-select" class="form-label">الميدان</label>
+                                <select class="form-select" id="task-field-select" required>
+                                    <option value="">اختر ميدان</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task-module-select" class="form-label">المقطع</label>
+                                <select class="form-select" id="task-module-select" required>
+                                    <option value="">اختر مقطع</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task-activity-select" class="form-label">النشاط</label>
+                                <select class="form-select" id="task-activity-select" required>
+                                    <option value="">اختر نشاط</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task-text" class="form-label">ملاحظات</label>
+                                <textarea class="form-control" id="task-text" rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-info w-100 py-2">
+                                <i class="fa-solid fa-save me-2"></i>
+                                حفظ المهمة
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-5 border-2 opacity-50">
+            
+            <!-- Weekly Schedule Section -->
+            <div class="card p-3 mb-4">
+                <div class="card-header bg-transparent border-0 pb-0">
+                    <h2 class="card-title text-info mb-3">
+                        <i class="fa-solid fa-table-cells me-2"></i>
+                        الجدول الأسبوعي
+                    </h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" id="schedule-table">
+                        <thead class="table-info">
+                            <tr>
+                                <th width="15%">الوقت</th>
+                                <th>الأحد</th>
+                                <th>الاثنين</th>
+                                <th>الثلاثاء</th>
+                                <th>الأربعاء</th>
+                                <th>الخميس</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <hr class="my-5 border-2 opacity-50">
+            
+            <!-- Tasks List Section -->
+            <div class="card p-3">
+                <div class="card-header bg-transparent border-0 pb-0">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="card-title text-info mb-0">
+                            <i class="fa-solid fa-list-check me-2"></i>
+                            المهام المجدولة
+                        </h2>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-info active" id="show-all-tasks">
+                                <i class="fa-solid fa-list me-1"></i>
+                                الكل
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-info" id="show-pending-tasks">
+                                <i class="fa-solid fa-clock me-1"></i>
+                                المعلقة
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-info" id="show-completed-tasks">
+                                <i class="fa-solid fa-check-circle me-1"></i>
+                                المكتملة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="tasks-list">
+                    <div class="alert alert-info text-center py-4">
+                        <i class="fa-solid fa-info-circle fa-2x mb-3"></i>
+                        <h5 class="mb-2">لا توجد مهام حالياً</h5>
+                        <p class="mb-0">قم بإضافة مهمة جديدة لبدء الاستخدام</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center p-4 mt-5">
+        <div class="container">
+            <div class="mb-3">
+                <a href="#" class="text-white mx-2"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p class="mb-2">&copy; 2024 نظام SmartProf. جميع الحقوق محفوظة.</p>
+            <p class="mb-0">
+                <i class="fa-solid fa-envelope me-2"></i>
+                <a href="mailto:abdo.1548@yahoo.fr" class="text-white text-decoration-none">
+                    abdo.bagua@yahoo.fr
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Hidden Audio for Notifications -->
+    <audio id="notification-sound" preload="auto">
+        <source src="notification.mp3" type="audio/mpeg">
+        متصفحك لا يدعم عنصر الصوت.
+    </audio>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                        
+                        // Check for updates
+                        registration.onupdatefound = () => {
+                            const installingWorker = registration.installing;
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    const updateToast = `
+                                        <div class="alert alert-info alert-dismissible fade show position-fixed bottom-0 end-0 m-3" role="alert">
+                                            <strong>تحديث متاح!</strong> يوجد إصدار جديد من التطبيق.
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            <button id="refresh-app" class="btn btn-sm btn-primary ms-2">
+                                                تحديث الآن
+                                            </button>
+                                        </div>
+                                    `;
+                                    
+                                    document.body.insertAdjacentHTML('beforeend', updateToast);
+                                    
+                                    document.getElementById('refresh-app').addEventListener('click', () => {
+                                        window.location.reload();
+                                    });
+                                }
+                            };
+                        };
+                    })
+                    .catch(err => console.log('ServiceWorker registration failed: ', err));
+            });
+        }
+
+        // Connection Status
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connection-status');
+            if (!navigator.onLine) {
+                statusElement.classList.remove('d-none');
+                statusElement.innerHTML = `
+                    <i class="fas fa-wifi-slash me-2"></i>
+                    أنت تعمل حالياً بدون اتصال بالإنترنت. سيتم مزامنة البيانات عند الاتصال.
+                `;
+            } else {
+                statusElement.classList.add('d-none');
+            }
+        }
+
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', () => {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(tooltipTriggerEl => {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Set today's date as default
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('task-date').value = formattedDate;
+            document.getElementById('task-date').dispatchEvent(new Event('change'));
+            
+            // Check notification permission
+            if ('Notification' in window && Notification.permission === 'granted') {
+                document.getElementById('enable-notifications-btn').classList.remove('btn-outline-secondary');
+                document.getElementById('enable-notifications-btn').classList.add('btn-success');
+                document.getElementById('enable-notifications-btn').innerHTML = `
+                    <i class="fa-solid fa-bell me-1"></i>
+                    التنبيهات مفعلة
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
